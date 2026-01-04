@@ -1,0 +1,60 @@
+server:
+  port: ${SERVICE_PORT:1760}
+
+spring:
+  application:
+    name: ${SERVICE_NAME:blood-donation-service}
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:blood_donation_service_db}?useUnicode=true&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root123}
+    hikari:
+      connectionTimeout: 60000
+      initializationFailTimeout: 3000
+      connectionTestQuery: SELECT 1
+      validationTimeout: 60000
+      maxLifetime: 35000
+      maximumPoolSize: 50
+      minimumIdle: 10
+      idleTimeout: 30000
+      registerMbeans: false
+      poolName: blood-donation-pool
+      isolate-internal-queries: true
+
+  jpa:
+    show-sql: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:5MB}
+      max-request-size: ${MAX_REQUEST_SIZE:75MB}
+
+logging:
+  file:
+    name: logs/app.log
+  level:
+    root: info
+  logback:
+    rolling-policy:
+      max-file-size: 10MB
+      max-history: 7
+telegram:
+  bot:
+    token:  ${TELEGRAM_BOT_TOKEN:8503741786:AAE2q0JNpClcT812PyVi_bIIFVs05apYLDs}
+    username: ${TELEGRAM_BOT_USERNAME:PeeZipBot}file_media
+
+minio:
+  url: ${MINIO_URL:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:admin}
+  secret-key: ${MINIO_SECRET_KEY:password}
+  bucket: ${MINIO_BUCKET:uploads}
+
+onesignal:
+  app-id: c78c24b4-5efb-4171-a40f-3628d016863f
+  api-key: os_v2_app_y6gcjnc67naxdjapgyunafugh74a4n3feksehvveifygggv5yx4btnqn53jlad4sq7hv45no6bed36n5o4brndrtrcasviytw2yq44y
+  api-url: https://onesignal.com/api/v1
