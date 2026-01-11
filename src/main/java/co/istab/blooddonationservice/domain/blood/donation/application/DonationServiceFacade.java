@@ -3,6 +3,7 @@ package co.istab.blooddonationservice.domain.blood.donation.application;
 import co.istab.blooddonationservice.domain.blood.donation.constant.DonationStatus;
 import co.istab.blooddonationservice.domain.blood.donation.entity.Donation;
 import co.istab.blooddonationservice.domain.blood.donation.exception.DonationException;
+import co.istab.blooddonationservice.domain.blood.donation.handler.DonationElasticsearchSync;
 import co.istab.blooddonationservice.domain.blood.donation.provider.DonationDatabaseProvider;
 import co.istab.blooddonationservice.domain.blood.donation.service.DonationService;
 import co.istab.blooddonationservice.domain.blood.user.entity.User;
@@ -11,7 +12,6 @@ import co.istab.blooddonationservice.share.entity.Metadata;
 import co.istab.blooddonationservice.share.entity.PaginationQuery;
 import co.istab.blooddonationservice.share.entity.Paging;
 import co.istab.blooddonationservice.share.handler.metadata.MetadataHandler;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +31,11 @@ public class DonationServiceFacade implements DonationService {
 
     private final DonationDatabaseProvider donationProvider;
     private final UserDatabaseProvider userProvider;
+
+    @Override
+    public void syncAll() {
+        donationProvider.sync();
+    }
 
     @MetadataHandler
     @Transactional
@@ -57,6 +62,7 @@ public class DonationServiceFacade implements DonationService {
         return donationProvider.getById(id).orElseThrow(DonationException::notFound);
     }
 
+    @DonationElasticsearchSync
     @MetadataHandler
     @Transactional
     @Override
@@ -73,6 +79,7 @@ public class DonationServiceFacade implements DonationService {
         return donationProvider.save(donation);
     }
 
+    @DonationElasticsearchSync
     @MetadataHandler
     @Transactional
     @Override
@@ -101,6 +108,8 @@ public class DonationServiceFacade implements DonationService {
         return donationProvider.save(oldEntity);
     }
 
+    @DonationElasticsearchSync
+    @MetadataHandler
     @Override
     public Donation delete(Metadata metadata, Integer id) {
 

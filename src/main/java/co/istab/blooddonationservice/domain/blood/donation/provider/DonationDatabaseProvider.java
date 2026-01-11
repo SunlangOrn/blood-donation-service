@@ -19,4 +19,6 @@ public interface DonationDatabaseProvider {
 
     List<Donation> getAllByDonorId(Integer donorId);
 
+    void sync();
+
 }

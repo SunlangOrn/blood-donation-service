@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PutMapping("/profile/{userId}")
-    public ResponseEntity<HttpBodyResponse<UserProfileResponse>> update
+    public ResponseEntity<HttpBodyResponse<UserProfileResponse>>update
             (@Valid@RequestBody UpdateUserProfileRequest request,
             @PathVariable Integer userId)
     {

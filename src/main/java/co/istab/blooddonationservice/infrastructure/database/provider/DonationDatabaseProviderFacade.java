@@ -2,6 +2,8 @@ package co.istab.blooddonationservice.infrastructure.database.provider;
 
 import co.istab.blooddonationservice.domain.blood.donation.entity.Donation;
 import co.istab.blooddonationservice.domain.blood.donation.provider.DonationDatabaseProvider;
+import co.istab.blooddonationservice.infrastructure.database.elasticsearch.DonationDocument;
+import co.istab.blooddonationservice.infrastructure.database.elasticsearch.DonationElasticsearchService;
 import co.istab.blooddonationservice.infrastructure.database.mapper.DonationDatabaseMapper;
 import co.istab.blooddonationservice.infrastructure.database.mysql.Entity.DonationEntity;
 import co.istab.blooddonationservice.infrastructure.database.mysql.repository.DonationJpaRepository;
@@ -9,10 +11,13 @@ import co.istab.blooddonationservice.share.entity.PaginationQuery;
 import co.istab.blooddonationservice.share.entity.Paging;
 import co.istab.blooddonationservice.share.utility.PageNumberUtility;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,7 +29,20 @@ import java.util.Optional;
 public class DonationDatabaseProviderFacade implements DonationDatabaseProvider {
 
     private final DonationJpaRepository repository;
+    private final DonationElasticsearchService donationElasticsearchService;
     private final DonationDatabaseMapper mapper;
+
+    @Override
+    @Transactional
+    public void sync() {
+        List<DonationDocument> donationDocuments = repository
+                .findAll()
+                .stream()
+                .filter(d -> d.getDeletedAt() == null)
+                .map(mapper::mapElastic)
+                .toList();
+        donationElasticsearchService.saveAll(donationDocuments);
+    }
 
     @Override
     public Paging<Donation> list(PaginationQuery query) {
@@ -100,4 +118,5 @@ public class DonationDatabaseProviderFacade implements DonationDatabaseProvider 
                         criteriaBuilder.equal(root.get("donor").get("id"), donorId))
         ).stream().map(mapper::form).toList();
     }
+
 }

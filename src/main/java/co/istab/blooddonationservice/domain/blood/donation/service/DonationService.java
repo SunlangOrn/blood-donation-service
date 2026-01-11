@@ -25,4 +25,6 @@ public interface DonationService {
 
     List<Donation> myRequests(Metadata metadata);
 
+    void syncAll();
+
 }
