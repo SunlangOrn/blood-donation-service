@@ -7,6 +7,7 @@ import co.istab.blooddonationservice.domain.blood.donation.provider.DonationData
 import co.istab.blooddonationservice.domain.blood.donation_action.constant.DonationActionStatus;
 import co.istab.blooddonationservice.domain.blood.donation_action.entity.DonationAction;
 import co.istab.blooddonationservice.domain.blood.donation_action.exception.DonationActionException;
+import co.istab.blooddonationservice.domain.blood.donation_action.handler.ActionElasticsearchSync;
 import co.istab.blooddonationservice.domain.blood.donation_action.provider.DonationActionDatabaseProvider;
 import co.istab.blooddonationservice.domain.blood.donation_action.service.DonationActionService;
 import co.istab.blooddonationservice.domain.blood.notification.service.NotificationService;
@@ -36,6 +37,12 @@ public class DonationActionServiceFacade implements DonationActionService {
     private final UserDatabaseProvider userProvider;
     private final NotificationService  notificationService;
 
+    @Transactional
+    @Override
+    public void syncMatchAll(){
+        donationActionProvider.sync();
+    }
+
     @MetadataHandler
     @Override
     public DonationAction getActionId(Metadata metadata, Integer actionId) {
@@ -55,6 +62,7 @@ public class DonationActionServiceFacade implements DonationActionService {
 
 
     @Transactional
+    @ActionElasticsearchSync
     @MetadataHandler
     @Override
     public DonationAction donate(Metadata metadata , Integer donationId) {
@@ -98,6 +106,7 @@ public class DonationActionServiceFacade implements DonationActionService {
         return savedAction;
     }
 
+    @ActionElasticsearchSync
     @Transactional
     @MetadataHandler
     @Override
@@ -137,6 +146,7 @@ public class DonationActionServiceFacade implements DonationActionService {
         return cancelled;
     }
 
+    @ActionElasticsearchSync
     @Transactional
     @MetadataHandler
     @Override
@@ -195,6 +205,7 @@ public class DonationActionServiceFacade implements DonationActionService {
         return accepted;
     }
 
+    @ActionElasticsearchSync
     @Transactional
     @MetadataHandler
     @Override

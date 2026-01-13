@@ -1,7 +1,6 @@
 package co.istab.blooddonationservice.infrastructure.database.elasticsearch;
 
 import co.istab.blooddonationservice.domain.blood.donation.constant.DonationStatus;
-import co.istab.blooddonationservice.domain.blood.donation.entity.Donation;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +10,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 

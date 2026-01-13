@@ -1,6 +1,7 @@
 package co.istab.blooddonationservice.presentation;
 
 import co.istab.blooddonationservice.domain.blood.donation.service.DonationService;
+import co.istab.blooddonationservice.domain.blood.donation_action.service.DonationActionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class SynchronousController {
 
     private final DonationService donationService;
+    private final DonationActionService donationActionService;
 
     @GetMapping("/donations")
     public ResponseEntity<String> syncDonation() {
         donationService.syncAll();
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("/donation-action")
+    public ResponseEntity<String> syncDonationAction() {
+        donationActionService.syncMatchAll();
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 

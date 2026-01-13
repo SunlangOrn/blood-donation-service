@@ -2,6 +2,9 @@ package co.istab.blooddonationservice.infrastructure.database.provider;
 
 import co.istab.blooddonationservice.domain.blood.donation_action.entity.DonationAction;
 import co.istab.blooddonationservice.domain.blood.donation_action.provider.DonationActionDatabaseProvider;
+import co.istab.blooddonationservice.infrastructure.database.elasticsearch.DonationActionDocument;
+import co.istab.blooddonationservice.infrastructure.database.elasticsearch.DonationActionElasticsearchService;
+import co.istab.blooddonationservice.infrastructure.database.elasticsearch.DonationDocument;
 import co.istab.blooddonationservice.infrastructure.database.mapper.DonationActionDatabaseMapper;
 import co.istab.blooddonationservice.infrastructure.database.mysql.Entity.DonationActionEntity;
 import co.istab.blooddonationservice.infrastructure.database.mysql.repository.DonationActionJpaRepository;
@@ -19,6 +22,18 @@ public class DonationActionDatabaseProviderFacade implements DonationActionDatab
 
     private final DonationActionJpaRepository repository;
     private final DonationActionDatabaseMapper mapper;
+    private final DonationActionElasticsearchService donationActionElasticsearchService;
+
+    @Override
+    public void sync(){
+        List<DonationActionDocument> documents = repository.findAll()
+                .stream()
+                .filter(d -> d.getDeletedAt() == null)
+                .map(mapper::mapElastic)
+                .toList();
+        donationActionElasticsearchService.saveAll(documents);
+
+    }
 
     @Override
     public List<DonationAction> getByUserId(Integer userId) {

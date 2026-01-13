@@ -20,5 +20,7 @@ public interface DonationActionService {
     List<DonationAction> getUserId (Metadata metadata);
 
     DonationAction getActionId (Metadata metadata, Integer actionId);
+
+    void syncMatchAll();
 }
 

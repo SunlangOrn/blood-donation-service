@@ -1,6 +1,7 @@
 package co.istab.blooddonationservice.infrastructure.database.mapper;
 
 import co.istab.blooddonationservice.domain.blood.donation_action.entity.DonationAction;
+import co.istab.blooddonationservice.infrastructure.database.elasticsearch.DonationActionDocument;
 import co.istab.blooddonationservice.infrastructure.database.mysql.Entity.DonationActionEntity;
 
 import org.mapstruct.*;
@@ -21,4 +22,13 @@ public interface DonationActionDatabaseMapper {
     @Mapping(target = "donation", source = "donation")
     @Mapping(source = "user.id", target = "userId")
     DonationAction from(DonationActionEntity donationActionEntity);
+
+
+    @Mapping(target = "actionId", source = "id")
+    @Mapping(target = "quantity", source = "quantity")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "isConfirmed", source = "isConfirmed")
+    @Mapping(target = "donationId", source = "donation.id")
+    @Mapping(target = "userId", source = "user.id")
+    DonationActionDocument mapElastic(DonationActionEntity entity);
 }

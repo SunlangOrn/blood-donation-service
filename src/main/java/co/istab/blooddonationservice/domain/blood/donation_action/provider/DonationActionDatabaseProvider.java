@@ -20,4 +20,6 @@ public interface DonationActionDatabaseProvider {
 
     List<DonationAction> getByUserId(Integer userId);
 
+    void sync();
+
 }

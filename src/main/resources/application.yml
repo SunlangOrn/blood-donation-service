@@ -42,6 +42,8 @@ spring:
       verification-mode: none
     indices:
       website-donation: ${ELASTICSEARCH_INDEX_SERVICE_DONATION:elastic-service-v1-donation}
+      website-donation-action: ${ELASTICSEARCH_INDEX_SERVICE_DONATION_ACTION:elastic-service-v1-donation-action}
+
 
 telegram:
   bot:
